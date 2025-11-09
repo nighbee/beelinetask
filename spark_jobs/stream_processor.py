@@ -16,6 +16,7 @@ POSTGRES_PROPERTIES = {
     "password": POSTGRES_PASSWORD,
     "driver": "org.postgresql.Driver"
 }
+
 POSTGRES_URL = f"jdbc:postgresql://{POSTGRES_SERVER}/{POSTGRES_DB}"
 
 def write_aggregates_to_postgres(batch_df, epoch_id):

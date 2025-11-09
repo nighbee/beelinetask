@@ -4,7 +4,6 @@ from datetime import datetime
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_date, sum, lit 
 
-# --- Removed: from stream_processor import SPARK_MASTER_URL ---
 
 SPARK_MASTER_URL = "spark://spark-master:7077"
 
@@ -64,11 +63,9 @@ def main(date_arg):
     # aggregate all metrics
     df_final_stats = df_total_events.unionByName(df_region_metrics)
 
-    # --- FIX 1: Define delete_query here ---
     delete_query = f"DELETE FROM daily_stats WHERE stat_date = '{date_arg}'"
     
     try:
-        # Use a dummy dbtable to execute the delete query
         spark.read.format("jdbc") \
             .option("url", POSTGRES_URL) \
             .option("user", POSTGRES_USER) \

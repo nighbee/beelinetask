@@ -191,12 +191,7 @@ pip install kafka-python faker
 Start the Spark streaming job to process events in real-time:
 
 ```bash
-docker-compose exec -u root spark-master spark-submit \
-  --master spark://spark-master:7077 \
-  --total-executor-cores 4 \
-  --conf spark.jars.ivy=/tmp/.ivy2 \
-  --packages org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0,org.postgresql:postgresql:42.6.0 \
-  /opt/bitnamilegacy/spark/jobs/stream_processor.py
+docker compose exec -u 0 spark-master spark-submit `  --master spark://spark-master:7077 `  --conf spark.jars.ivy=/tmp/.ivy2 `  --packages org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0,org.postgresql:postgresql:42.6.0 `  /opt/bitnamilegacy/spark/jobs/stream_processor.py
 ```
 
 ### Running the Producer
@@ -218,21 +213,8 @@ Process data for a specific date:
 # PowerShell
 $TODAY = (Get-Date).ToString("yyyy-MM-dd")
 
-docker-compose exec -u root spark-master spark-submit \
-  --master spark://spark-master:7077 \
-  --packages org.postgresql:postgresql:42.6.0 \
-  /opt/bitnamilegacy/spark/jobs/batch_processor.py $TODAY
-```
-
-```bash
-# Bash/Linux
-TODAY=$(date +%Y-%m-%d)
-
-docker-compose exec -u root spark-master spark-submit \
-  --master spark://spark-master:7077 \
-  --packages org.postgresql:postgresql:42.6.0 \
-  /opt/bitnamilegacy/spark/jobs/batch_processor.py $TODAY
-```
+docker-compose exec -u root spark-master spark-submit `  --master spark://spark-master:7077 `  --packages org.postgresql:postgresql:42.6.0 `  /opt/bitnamilegacy/spark/jobs/batch_processor.py $TODAY
+``` 
 
 ### Automated Batch Processing via Airflow
 
@@ -375,6 +357,15 @@ beelinetask/
    ```bash
    docker-compose logs spark-master
    ```
+
+
+check sql table for a data: 
+
+docker-compose exec postgres psql -U airflow -d airflow -c "SELECT * FROM real_time_metrics ORDER BY created_at DESC LIMIT 10;"
+
+docker-compose exec postgres psql -U airflow -d airflow -c "SELECT * FROM anomalies LIMIT 10;"
+
+docker-compose exec postgres psql -U airflow -d airflow -c "SELECT * FROM daily_stats ORDER BY stat_date DESC, metric_key;"
 
 ### Batch Processor Fails
 
